@@ -109,5 +109,5 @@ if submitted:
     # Additional message based on other factors
     if prediction >= threshold:
         st.info("You have a strong application profile! Consider applying to top-tier universities.", icon="💼")
-    elif university_rating <= 2 and gre_score < 300:
+    else:
         st.error("You may want to strengthen your profile before applying.", icon="🚫")
