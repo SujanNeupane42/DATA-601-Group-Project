@@ -2,13 +2,13 @@ import pickle
 import pandas as pd
 import streamlit as st
 
-features = ['GRE Score', 'TOEFL Score', 'University Rating', 'SOP', 'LOR ', 'CGPA',
-       'Research']
+# these are our fields
+features = ['GRE Score', 'TOEFL Score', 'University Rating', 'SOP', 'LOR ', 'CGPA', 'Research']
 
-# page configuration that will auto load while running the page
+# the page configuration; it will auto-load when opening the page
 st.set_page_config(page_title="University Admission Predictor", page_icon="🎓", layout="wide")
 
-# Custom CSS for our design that will load while running the page
+# Custom CSS for our design 
 st.markdown(
     """
     <style>
@@ -60,12 +60,12 @@ st.markdown("<div class='subheader'>Enter your details below to predict your cha
 
 
 # Load the pipeline from the file
-with open('linear_regression_pipeline.pkl', 'rb') as f:
+with open('poly_regression_pipeline.pkl', 'rb') as f:
     loaded_pipeline = pickle.load(f)
 
+# our form using streamlit
 with st.form("admission_form"):
     # Academic Information Section
-    # here, each column will allow us to enter differnet categories of information
     st.markdown("### 📚 Academic Information")
     academic_col1, academic_col2 = st.columns(2)
 
@@ -91,22 +91,24 @@ with st.form("admission_form"):
     # Submit button
     submitted = st.form_submit_button("🔍 Predict Admission Chance")
 
-    # Convert research experience to binary
+    # Convert research experience to binary (0/1)
     research_binary = 1 if research == "Some Research Experience" else 0
 
-# Display the results after form submission (only works after sumbmit button is pressed.)
+# Display the results after form submission (it will only work after pressing the buttonn)
 if submitted:
+
+    # our threshold to determine if an application is strong or not
     threshold = 0.75
     data = pd.DataFrame([[gre_score, toefl_score, university_rating, sop, lor, cgpa, research_binary]], columns=features)
     prediction = loaded_pipeline.predict(data)[0]
     
-    # Predict admission chance based on GRE score
+    # Predict admission chance 
     if prediction >= threshold:
         st.success(f"🎉 Your chance of admission: **{round(prediction*100, 2)}%**", icon="✅")
     else:
         st.warning(f"❗ Your chance of admission: **{round(prediction*100, 2)}%**", icon="⚠️")
 
-    # Additional message based on other factors
+    # Additional message based on the threshold
     if prediction >= threshold:
         st.info("You have a strong application profile! Consider applying to top-tier universities.", icon="💼")
     else:
