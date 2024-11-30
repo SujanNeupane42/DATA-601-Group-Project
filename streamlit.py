@@ -102,6 +102,9 @@ if submitted:
     threshold = 0.75
     data = pd.DataFrame([[gre_score, toefl_score, university_rating, sop, lor, cgpa, research_binary]], columns=features)
     prediction = loaded_pipeline.predict(data)[0]
+
+    # essentially capping prediction between 0 and 1
+    prediction = max(0, min(1, prediction))
     
     # Predict admission chance 
     if prediction >= threshold:
